@@ -1,0 +1,57 @@
+from scipy import linalg as la
+import scipy
+import numpy as np
+import matplotlib.pyplot as plt
+import sympy
+import random
+
+def example1():
+    ## 방정식을 만드는 내용
+    A = sympy.Matrix([[2, 3], [5, 4]])
+    b = sympy.Matrix([4, 3])
+    print(A.rank(), "\n", A.condition_number(), "\n", sympy.N(A.condition_number()), "\n", A.norm())
+
+def example2():
+    ## 방정식 풀이. 미지수 값을 알아내는 solve
+    x_vars = sympy.symbols("x_1, x_2, x_3")
+    A = sympy.Matrix([[1, 2, 3], [4, 5, 6]])
+    x = sympy.Matrix(x_vars)
+    b = sympy.Matrix([7, 8])
+    print(sympy.solve(A*x - b, x_vars))
+
+def equation(X, Y, power, plot=True):
+    ## 선형방정식 추정 모델 (n차 다항식)
+    A = np.vstack([X**n for n in range(power+1)])
+    print(A)
+    sol, r, rank, sv = la.lstsq(A.T, Y)
+    x = np.linspace(-40,40,100)
+    y_fit = sum([s * x**n for n, s in enumerate(sol)])
+
+    if plot is True:
+        print(y_fit)
+        fig, ax = plt.subplots(figsize =(12, 4))
+        ax.plot(X, Y, 'go', alpha=0.5, label='data')
+        ax.plot(x, y_fit, '-', label='fit', color='C0')
+        plt.show()
+
+def normTest():
+    #정규분포 데이터 equation 테스트
+    data = np.random.normal(0,1,5000)
+    dic = {}
+    for i in data:
+        temp = int(i*10)
+        if dic.get(temp) is None:
+            dic[temp] = 1
+        else:
+            dic[temp] += 1
+
+    k = list(dic.keys())
+    v = list(dic.values())
+    X = np.array(k)
+    Y = np.array(v)
+
+    equation(X, Y, 3)
+
+example1()
+example2()
+normTest()
