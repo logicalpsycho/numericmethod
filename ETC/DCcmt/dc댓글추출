@@ -1,0 +1,36 @@
+	var sType = $(this).attr('data-sort');
+	var nPage = 1;
+	var gall_id = $(document).data('gallery_id') || getURLParameter("id");
+	var no = $(document).data('article_no') || getURLParameter("no");
+	var cmt_id = $(document).data('comment_id') || getURLParameter("id");
+	var cmt_no = $(document).data('comment_no') || getURLParameter("no");
+	var focus_cno = sType == 'VIEW_PAGE' ? getURLParameter("fcno") : null;
+	var focus_pno = sType == 'VIEW_PAGE' ? getURLParameter("fpno") : null;
+
+	if(no === null) { no = cmt_no = $("#no").val(); }
+	var e_s_n_o  =$("#e_s_n_o").val();
+	//var token  = get_cookie('ci_c');
+	var board_type = $("#board_type").val();
+	var _GALLTYPE_ = $("#_GALLTYPE_").val();
+	if(list_type === null) list_type = board_type;
+	var isFirstViewPg = false; //처음 뷰페이지 스크롤 이동 안함.
+	var prevCommentCnt = $("#comment_wrap_"+no).attr('data-comment-cnt');
+
+	var bScroll = typeof bScroll !== 'undefined' ?  bScroll : true; //스크롤 이동 여부
+
+
+
+$.ajax({
+		type:'POST',
+        url:'/board/comment/',
+		cache: false,
+		async: false,
+		dataType: "json",
+        data:{ id:gall_id, no: no, cmt_id: cmt_id, cmt_no: cmt_no, focus_cno: focus_cno, focus_pno: focus_pno, e_s_n_o: e_s_n_o, comment_page: nPage, sort: sType, prevCnt: prevCommentCnt, board_type: board_type ,_GALLTYPE_ : _GALLTYPE_},
+        success:function(data){
+			try {
+				console.log(data.comments)
+
+			} catch(e) {}
+		}
+	});
